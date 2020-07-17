@@ -2,7 +2,7 @@
 #include "FrameViewer.h"
 #pragma once
 
-namespace OpenMKS {
+namespace KinectsTest {
 
 	using namespace System;
 	using namespace System::ComponentModel;
@@ -1359,19 +1359,14 @@ private: System::Void Timer1_Tick(System::Object^ sender, System::EventArgs^ e) 
 	if (STREAMING && Kinect2NB> 0 )
 	{
 
-		FILE* f;
-		fopen_s(&f, "debug.txt", "ab");
-
 		toolStripStatusLabel->Text = L"Getting Frame... ";
 		timer1->Enabled = false;
 		while (TURN < Kinect2NB && !myKinect2App[TURN].started) TURN++;
 
 		if (TURN < Kinect2NB)
 		{
-			fprintf(f, "Reading  .... Turn = %d ... K2NB = %d ... ", TURN, Kinect2NB);
 			if (TURN < Kinect2NB)
 			{
-				fprintf(f, "OK kinect2   \n");
 				if (myKinect2App[TURN].GetDepthFrame(1, SETTINGS::Scan::fill_gaps))
 				{
 					myKinect2App[TURN].CalculateTransformedCoordinates(myKinect2App[TURN].Rotation, myKinect2App[TURN].Translation);
@@ -1387,13 +1382,9 @@ private: System::Void Timer1_Tick(System::Object^ sender, System::EventArgs^ e) 
 				Sleep(100);
 				TURN++;
 			}
-			else fprintf(f, "  No Kinects  \n");
 		}
-		else fprintf(f, "  TURN EXCEEDED LIMIT  \n");
 		TURN = TURN % Kinect2NB;
 		timer1->Enabled = true;
-
-		fclose(f);
 	}
 	STREAMING = !STREAMING;
 
@@ -1662,7 +1653,6 @@ private: System::Void ToolStripButton_AdjustTransformation_Click(System::Object^
 		vector<vector<Eigen::Vector3f>> reference_points;
 		reference_points = CreateRefPointsVector(device);
 		myKinect2App[device].CaluclateRotationTranslation(reference_points, device);
-		//myKinect2App[device].ExportInfors("rotations.txt");
 
 		FillRefPointsData(device);
 
@@ -2007,7 +1997,6 @@ private: System::Void button_AlignWithLeftSensor_Click(System::Object^ sender, S
 		vector<Eigen::Vector3f> reference_points; reference_points.clear();
 		reference_points = myKinect2App[left_index].RefPoints.at(device);
 		myKinect2App[device].CaluclateRotationTranslation(reference_points, left_index);
-		//myKinect2App[device].ExportInfors("rotations.txt");
 
 		FillRefPointsData(device);
 
